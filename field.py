@@ -1,5 +1,7 @@
 class Field:
-    def __init__(self, value) -> None:
+
+    def __init__(self, value):
+        
         self.value = value
 
     

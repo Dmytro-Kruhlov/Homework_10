@@ -18,8 +18,7 @@ class Record:
                 continue
             if field.value == phone_number:
                 self.optional_fields.remove(field)
-                #break
-
+                
     def edit_phone(self, phone_number, new_phone_number):
         for field in self.optional_fields:
             if not isinstance(field, Phone):
