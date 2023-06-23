@@ -1,9 +1,6 @@
 from oop import AdressBook, Record, Name, Phone
 
 
-
-
-
 adress_book = AdressBook()
 
 
@@ -28,11 +25,11 @@ def hello(args):
     return "How can I help you?"
 
 
-def add(args):
+def add_record(args):
 
     args = spliting(args)
 
-    if len(args) != 2:
+    if len(args) < 1 or len(args) > 2:
         raise ValueError
     name, phone = args
     if name in adress_book.data:
@@ -40,20 +37,40 @@ def add(args):
     else:
         record = Record(Name(name), Phone(phone))
         adress_book.add_record(record)
+        
         return f"Contact {name} with phone number {phone} has been added."
+    
 
-
-def change(args):
+def add_phone(args):
 
     args = spliting(args)
 
     if len(args) != 2:
         raise ValueError
     name, phone = args
-    if name in data:
-        data[name] = phone
+    record = adress_book[name]
+    if name in adress_book.data:
+        record.add_phone(Phone(phone))
 
-    return f"The phone number for contact {name} has been changed to {phone}."
+    return f"A number {phone} has been added to a contact {name}"
+
+
+def change(args):
+
+    args = spliting(args)
+
+    if len(args) != 3:
+        raise ValueError
+    name, old_phone, new_phone = args
+    if name not in adress_book.data:
+        return f"You dont have contact with name {name}"
+    record = adress_book[name]
+    
+    for field in record.optional_fields:
+        if field.value == old_phone:
+            field.value = new_phone
+        
+    return f"The phone number {old_phone} for contact {name} has been changed to {new_phone}."
 
 
 def get_phone_number(args):
@@ -63,8 +80,12 @@ def get_phone_number(args):
     if len(args) != 1:
         raise ValueError
     name = args[0]
-    if name in data:
-        return f"The phone number for contact {name} is {data[name]}."
+    if name in adress_book.data:
+        record = adress_book[name]
+        phones = []
+        for field in record.optional_fields:
+            phones.append(field.value)
+        return f"The phone numbers for contact {name} is {', '.join(phones)}."
     else:
         raise IndexError
 
@@ -84,11 +105,12 @@ def show_all_contacts(args):
 
 
 COMMANDS = {
-    add: ["add"],
+    add_record: ["add record"],
     hello: ["hello"],
     change: ["change"],
     get_phone_number: ["phone"],
-    show_all_contacts: ["show all"]
+    show_all_contacts: ["show all"],
+    add_phone: ["add phone"]
 }
 
 
